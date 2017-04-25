@@ -1,4 +1,37 @@
 /*
+70. Climbing Stairs
+You are climbing a stair case. It takes n steps to reach to the top.
+
+Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
+
+Note: Given n will be a positive integer.
+*/
+/*
+i steps:
+1. take 1 step from the i -1 step
+2. take 1 step to cross 2 steps, from the i-2 step
+https://leetcode.com/articles/climbing-stairs/#approach-3-dynamic-programming-accepted
+ways[i] = ways[i-1] + ways[i-2]
+
+(i, n)
+[1,1,2,3,5,8]
+*/
+
+public class Solution{
+	public int climbStairs(int n) {
+		if (n < 1) return 0;
+		int[] ways = new int[n + 1];
+		ways[0] = 1;
+		ways[1] = 1;
+		for (int i = 2; i <= n; i++) {
+			ways[i] = ways[i - 2] + ways[i - 1];
+		}
+		return ways[n];
+	}
+}
+
+
+/*
 413. Arithmetic Slices
 A sequence of number is called arithmetic if it consists of at least three elements and if the difference between any two consecutive elements is the same.
 

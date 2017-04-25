@@ -21,3 +21,54 @@ Note:
 All elements in nums1 and nums2 are unique.
 The length of both nums1 and nums2 would not exceed 1000.
 */
+/*
+[5,4,3,6,2]
+stack: [5, 4, 3] 6, and 6 > 3 => 5,4,3 -> 6
+s : [6, 2]
+
+Iterate arr:
+	use a stack to keep track of decreasing subsequence
+	if arr[i] > stack.peek():
+		pop all the elements less than arr[i]
+		for all the poped ones -> arr[i] map(popped, arr[i])
+	put arr[i] in stack
+Iterate subarr:
+	if !map.containsKey(subarr[i])
+		subarr[i] = -1
+	else
+		subarr[i] = map.get(subarr[i])
+*/
+
+public class Solution{ 
+	public int[] nextGreaterElement(int[] findNum, int[] nums) {
+		if (findNum == null || nums == null) return null;
+		Map<Integer, Integer> map = new HashMap<>();
+		Stack<Integer> stack = new Stack<>();
+		
+		for (int x : nums) {
+			while (!stack.isEmpty() && stack.peek() < x) {
+				map.put(stack.pop(), x);
+			}
+			stack.push(x);
+		}
+		
+		for (int i = 0; i < findNum.length; i++) {
+			findNum[i] = map.containsKey(findNum[i]) ? map.get(findNum[i]) : -1;
+		}
+
+		return findNum;
+
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
