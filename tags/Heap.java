@@ -74,13 +74,13 @@ public class Solution{
 				map.put(c, map.get(c) + 1);
 			}
 			max = max < map.get(c) ? map.get(c) : max;
-			List<Character> arr = buildArray(map, max);
-			return getString(arr);
 		}
+		List<Character>[] arr = buildArray(map, max);
+		return getString(arr);
 	}
 	//array, i -> char frequency is i
-	public List<Character>[] buildArray(HashMap<Character, Integer> map, int max) {
-		List<Character>[] arr = new List[max + 1];
+	public List<Character>[] buildArray(Map<Character, Integer> map, int max) {
+		List<Character>[] arr = new ArrayList[max + 1];
 		for (Character key : map.keySet()) {
 			int freq = map.get(key);
 			if (arr[freq] == null) {
@@ -92,21 +92,21 @@ public class Solution{
 	}
 
 	//array[i] = c, str.append(c) for i times
-	public String getString(List<Character> arr) {
-		String res = "";
+	//Have to use StringBuilder to append to save time
+	public String getString(List<Character>[] arr) {
+		StringBuilder res = new StringBuilder();
 		for (int i = arr.length - 1; i > 0; i--) {
 			if (arr[i] != null) {
-				for (int j = 0; j < arr[i].size(); j++) {
+				for (Character c :  arr[i]) {
 					for (int k = 0; k < i; k++)
-						res += String.valueOf(arr[i].get(j));
+						res.append(c);
 				}
 			}
 		}
-		return str;
+		return res.toString();
 	}
 
 }
-
 
 
 

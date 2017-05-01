@@ -1,4 +1,63 @@
 /*
+121. Best Time to Buy and Sell Stock
+Say you have an array for which the ith element is the price of a given stock on day i.
+
+If you were only permitted to complete at most one transaction (ie, buy one and sell one share of the stock), design an algorithm to find the maximum profit.
+
+Example 1:
+Input: [7, 1, 5, 3, 6, 4]
+Output: 5
+
+max. difference = 6-1 = 5 (not 7-1 = 6, as selling price needs to be larger than buying price)
+Example 2:
+Input: [7, 6, 4, 3, 1]
+Output: 0
+
+In this case, no transaction is done, i.e. max profit = 0.
+*/
+[7, 1, 5, 3, 6, 4]
+currMax += prices[i] - prices[i - 1] 
+
+public class Solution{
+	public int maxProfit(int[] prices) {
+		if (prices == null) return 0;
+		int currMax = 0;
+		int maxSoFar = 0;
+
+		for (int i = 1; i < prices.length; i++) {
+			currMax = Math.max(0, currMax + prices[i] - prices[i-1]);
+			maxSoFar = Math.max(maxSoFar, currMax);
+		}
+		return maxSoFar;
+
+	}
+}
+
+/*
+198. House Robber
+You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security system connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
+
+Given a list of non-negative integers representing the amount of money of each house, determine the maximum amount of money you can rob tonight without alerting the police.
+*/
+public class Solution {
+    public int rob(int[] nums) {
+        if (nums == null) return 0;
+        //int[] dp = new int[nums.length];
+        int prevMax = 0;
+        int currMax = 0;
+        int max = 0;
+        for (int i = 0; i < nums.length; i++) {
+            max = Math.max(prevMax + nums[i], currMax); 
+            prevMax = currMax;
+            currMax = max;
+        }
+        return max; 
+    }
+}
+
+
+
+/*
 70. Climbing Stairs
 You are climbing a stair case. It takes n steps to reach to the top.
 
@@ -57,16 +116,16 @@ A = [1, 2, 3, 4]
 
 return: 3, for 3 arithmetic slices in A: [1, 2, 3], [2, 3, 4] and [1, 2, 3, 4] itself.
 */
-/*[1, 2, 3, 4], sum = 3, cur = 3, add 5 to the sequecne, we created a new arithmetic array[3, 4, 5]
+/*[1, 2, 3, 4], sum = 3, cur = 2, add 5 to the sequecne, we created a new arithmetic array[3, 4, 5]
 also each old arithmetic array can create a new a array, because old ones + new element is a new one
 so update the sum = sum + cur; */
 public class Solution{
 	public int numberOfArithmeticSlices(int[] A) {
-		if (A == null || A.length < 3) return 0;
+		if (A == null) return 0;
 		int cur = 0, sum = 0;
 		for (int i = 2; i < A.length; i++) {
 			if (A[i] - A[i - 1] == A[i - 1] - A[i - 2]) {
-				cur += 1;
+				cur += 1;//cur stands for the arithmetic array at the end of the current subarry
 				sum += cur; //key trick
 			}else {
 				cur = 0;
