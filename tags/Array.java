@@ -48,7 +48,6 @@ public class Solution{
 		return disappeared;
 	}
 }
-
 /*
 442. Find All Duplicates in an Array
 Given an array of integers, 1 ≤ a[i] ≤ n (n = size of array), some elements appear twice and others appear once.
