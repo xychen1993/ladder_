@@ -1,4 +1,100 @@
 /*
+448. Find All Numbers Disappread in an Array
+Given an array of integers where 1 ≤ a[i] ≤ n (n = size of array), some elements appear twice and others appear once.
+
+Find all the elements of [1, n] inclusive that do not appear in this array.
+
+Could you do it without extra space and in O(n) runtime? You may assume the returned list does not count as extra space.
+
+Example:
+
+Input:
+[4,3,2,7,8,2,3,1]
+
+Output:
+[5,6]
+*/
+/*
+Iterate a:
+	flip a[a[i] - 1] to negative to mark a[i] appearance
+Iterate marked a:
+	if a[i] > 0:
+		i+1 doesn't appear
+*/
+/*
+Test case:
+nums = [1,3,3]
+i:0, nums[0] = 1 > 0, [-1,3,3]
+i:2, nums[2] = 3 > 0, [-1,3,-3]
+i:2, nums[2] = -3 < 0
+[-1,3,-3]
+i:1, nums[1] = 3 > 0, add 3
+*/
+public class Solution{
+	public List<Integer> findDisappearedNumbers(int[] nums) {
+		if (nums == null) return null;
+		List<Integer> disappeared = new ArrayList<>();
+		//Mark the appearance of each element
+		for (int x : nums) {
+			int index = Math.abs(x) - 1;//Get the real index
+			if (nums[index] > 0)
+				nums[index] = -nums[index];
+		}
+		//Find the missing elements
+		for (int i = 0; i < nums.length; i++) {
+			if (nums[i] > 0)
+				disappeared.add(i + 1);
+		}
+		return disappeared;
+	}
+}
+
+/*
+442. Find All Duplicates in an Array
+Given an array of integers, 1 ≤ a[i] ≤ n (n = size of array), some elements appear twice and others appear once.
+
+Find all the elements that appear twice in this array.
+
+Could you do it without extra space and in O(n) runtime?
+
+Example:
+Input:
+[4,3,2,7,8,2,3,1]
+
+Output:
+[2,3]
+*/
+/*
+Iterate a:
+	if a[a[i]] already < 0:
+		a[i] appears twice
+	else :
+		flip the element in position a[i] to negative
+*/
+/*
+test case:
+nums=[1,2,2,4]
+i:1, nums[0] = 1 > 0, [-1,2,2,4] 
+i:2, nums[1] = 2 > 0, [-1,-2,2,4]
+i:2, nums[1] = -2 < 0, add 2 to duplicate
+i:4, nums[3] = 4 > 0, [-1,-2,2,-4]
+
+*/
+public class Solution{
+	public List<Integer> findDuplicates(int[] nums) {
+		if (nums == null) return null;
+		List<Integer> duplicates = new ArrayList<>();
+		for (int x : nums) {
+			int index = Math.abs(x); //Get the index
+			if (nums[index - 1] < 0)
+				duplicates.add(index);
+			else
+				nums[index - 1] = -nums[index - 1];
+		}
+		return duplicates;
+	}
+}
+/*
 485. Max Consecutive Ones
 Given a binary array, find the maximum number of consecutive 1s in this array.
 Example 1:
