@@ -50,7 +50,6 @@ public class Solution{
 			p *= nums[i + 1];
 			res[i] *= p;
 		}
-
 		return res;
     } 
 }
