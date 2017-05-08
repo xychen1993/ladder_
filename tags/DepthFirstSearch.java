@@ -33,8 +33,6 @@ DFS(i,j):
 [['W', 'W', 'B'],
 ['W', 'B', 'W'],
 ['B', 'W', 'W']]
-
-
 */
 public class Solution{
 	public int findLonelyPixel(char[][] picture) {
