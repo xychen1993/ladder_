@@ -1,4 +1,82 @@
 /*
+CC150/2.5 FOLLOW UP: Suppose the digits are stored in forward order. Repeat the above problem. EXAMPLE Input:(6 -> 1 -> 7) + (2 -> 9 -> 5).That is,617 + 295. Output: 9 -> 1 -> 2.That is, 912.
+*/
+/*
+1. Comparing the length of two lists, padding the shorter list with 0s.
+2. Since we need to add the result to the head, in each recursive call must return the reuslt and carry, we need to use a new class Partial Sum to store the current result and carry.
+*/
+class PartialSum{
+	public LinkedListNode sum;
+	public int carry;
+
+	public PartialSum(LinkedListNode sum, int carry) {
+		this.sum = sum;
+		this.carry = carry;
+	}
+}
+public class Solution{
+	public LinkedListNode addLists(LinkedListNode l1, LinkedListNode l2) {
+		int len1 = length(l1);
+		int len2 = length(l2);
+		
+		if (len1 < len2) {
+			l1 = paddingZeros(l1, len2 - len1);
+		}else {
+			l2 = paddingZeros(l2, len1 - len2);
+		}
+
+		PartialSum sum = addListsHelper(l1, l2);
+
+		return sum.carry == 0 ? sum.sum : insertBefore(sum.sum, sum.carry); 
+	}
+
+	//Add two lists recursively
+	public PartialSum addListsHelper(LinkedListNode l1, LinkedListNode l2) {
+		if (l1 == null || l2 == null) {
+			return new PartialSum(null, 0);
+		}
+
+		//Get the result and carry from next nodes
+		PartialSum sum = addListsHelper(l1.next, l2.next);
+
+		int val = sum.carry + l1.value + l2.value;
+
+		sum.sum = insertBefore(sum.sum, val % 10);
+		sum.carry = val / 10;
+
+		return sum;
+
+	}
+
+	//insert a new node with value val before l
+	public LinkedListNode insertBefore(LinkedListNode l, int val) {
+		LinkedListNode node = new LinkedListNode(val);
+		node.next = l;
+		return node;
+	}
+	
+	//Get the list length
+	public int length(LinkedListNode l) {
+		int length = 0;
+		while (l != null) {
+			length++;
+			l = l.next;
+		}
+		return length;
+	}
+	//Padding the shorter list with 0s
+	public LinkedListNode paddingZeros(LinkedListNode l, int zerosNum) {
+		for (int i = 0; i < zerosNum; i++) {
+			LinkedListNode tmp = new LinkedListNode(0);
+			tmp.next = l;
+			l = tmp;
+		}
+		return l;
+	}
+
+}
+
+/*
 369. Plus One Linked List
 Given a non-negative integer represented as non-empty a singly linked list of digits, plus one to the integer.
 
