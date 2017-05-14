@@ -1,5 +1,54 @@
 /*
-CC150/2.5 FOLLOW UP: Suppose the digits are stored in forward order. Repeat the above problem. EXAMPLE Input:(6 -> 1 -> 7) + (2 -> 9 -> 5).That is,617 + 295. Output: 9 -> 1 -> 2.That is, 912.
+CC150 2.6 Given a circular linked list, implement an algorithm which returns the node at the beginning of the loop. 
+EXAMPLE Input:A ->B->C->D->E-> C[thesameCasearlier] 
+Output:C
+*/
+/*
+1. Two pointers, slow and fast;
+2. Move fast at a rate of 2 steps, slow at a rate of 1 step
+3. When the collide, move slow to the head, keep fast where it is.
+4. Move fast and slow at a rate of 1 step,  return the new collide point.
+*/
+public class Solution{
+	public LinkedListNode findLoopBeginning(LinkedListNode l) {
+		LinkedListNode firstCollide = findFirstCollideNode(l);
+		
+		//If loop exists in this list
+		if (firstCollide == null || firstCollide.next == null) {
+			return null;//No loop
+		}
+
+		return findBeginningNode(l, firstCollide);
+	}
+
+	//find first collide node
+	public LinkedListNode findFirstCollideNode(LinkedListNode l) {
+		LinkedListNode fast = l;
+		LinkedListNode slow = l;
+		
+		while (fast != null && fast.next != null) {
+			fast = fast.next.next;
+			slow = slow.next;
+			if (slow == fast) break;
+		}
+
+		return fast;
+	}
+	//find second collide node which is the loop beginning
+	public LinkedListNode findBeginningNode(LinkedListNode l, LinkedListNode firstCollide) {
+		while (l != firstCollide) {
+			l = l.next;
+			firstCollide = firstCollide.next;
+		}
+		return l;
+	}
+}
+
+/*
+CC150/2.5 FOLLOW UP: Suppose the digits are stored in forward order. Repeat the above problem. 
+EXAMPLE 
+Input:(6 -> 1 -> 7) + (2 -> 9 -> 5).That is,617 + 295. 
+Output: 9 -> 1 -> 2.That is, 912.
 */
 /*
 1. Comparing the length of two lists, padding the shorter list with 0s.
