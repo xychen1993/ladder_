@@ -1,4 +1,92 @@
 /*
+CC150: STACK 3.2  How would you design a stack which, in addition to push and pop, also has a function min which returns the minimum element? Push, pop and min should all operate in 0(1) time.
+--
+Also LeetCode 155. Min Stack
+Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+
+push(x) -- Push element x onto stack.
+pop() -- Removes the element on top of the stack.
+top() -- Get the top element.
+getMin() -- Retrieve the minimum element in the stack.
+Example:
+MinStack minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+minStack.getMin();   --> Returns -3.
+minStack.pop();
+minStack.top();      --> Returns 0.
+minStack.getMin();   --> Returns -2.
+*/
+/*
+In the stack, we store the (new element - current min)
+
+min = Integer.MAX_VALUE
+s{}
+Insert e into s:
+	s.push(e - min)
+	if (e < min) min = e;
+Pop from s:
+	top = s.peek();
+	if (top >= 0) return pop + min
+	else {
+		minV = min
+		min = min - top
+		return minV
+	}
+*/
+/*
+push:
+s:{}, m:MAX_VALUE
+6-> s:{0}, m:6
+7-> s:{0,1}, m:6
+3-> s:{0,1,-3},m:3
+
+pop:
+s:{0,1,-3},m:3
+s:{0,1},m:3 - (-3) = 6, ->3
+s:{0}, m:6, ->6 + 1 = 7
+s:{}, m:6, ->6 + 0 = 6
+
+*/
+
+public class MinStack{
+	List<Integer> s;
+	int curMin;
+	public MinStack() {
+		s = new ArrayList<>();
+		curMin = Integer.MAX_VALUE;
+	}
+
+    public void push(int x) {
+    	if (curMin == Integer.MAX_VALUE)
+    		curMin = x;
+    	int gap = x - curMin;
+    	s.add(gap);
+    	if (gap < 0) {
+    		curMin = x; //update the minimum
+    	}
+        
+    }
+    
+    public void pop() {
+        if (s == null || s.size() == 0) return;
+        int top = s.get(s.size() - 1);
+        if (top < 0) {
+        	curMin -= top;
+        }
+    }
+    
+    public int top() {
+        if (s.size() != 0)
+        	return s.get(s.size() - 1);
+    }
+    
+    public int getMin() {
+        return curMin;
+    }
+}
+/*
 496. Next Greater Element I
 You are given two arrays (without duplicates) nums1 and nums2 where nums1’s elements are subset of nums2. Find all the next greater numbers for nums1's elements in the corresponding places of nums2.
 
