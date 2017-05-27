@@ -51,41 +51,48 @@ s:{}, m:6, ->6 + 0 = 6
 */
 
 public class MinStack{
-	List<Integer> s;
-	int curMin;
+	List<Long> s;
+	long curMin;
 	public MinStack() {
 		s = new ArrayList<>();
-		curMin = Integer.MAX_VALUE;
 	}
 
     public void push(int x) {
-    	if (curMin == Integer.MAX_VALUE)
-    		curMin = x;
-    	int gap = x - curMin;
-    	s.add(gap);
-    	if (gap < 0) {
-    		curMin = x; //update the minimum
+    	if (s.size() == 0) {
+    	    curMin = x;
+    	    s.add(0L);
+    	}else {
+        	s.add(x - curMin);
+        	if (x < curMin) {
+        		curMin = x; //update the minimum
+        	}
     	}
-        
     }
     
     public void pop() {
-        if (s == null || s.size() == 0) return;
-        int top = s.get(s.size() - 1);
-        if (top < 0) {
+        if (s.size() == 0) return;
+        long top = s.get(s.size() - 1);
+        if (top < 0L) {
         	curMin -= top;
         }
+        s.remove(s.size() - 1);
     }
     
     public int top() {
-        if (s.size() != 0)
-        	return s.get(s.size() - 1);
+        long top = 0L;
+        if (s.size() != 0) {
+            top = s.get(s.size() - 1);
+            if (top > 0L) return (int)(top + curMin);
+            return (int)(curMin);
+        }
+        return (int)top;
     }
     
     public int getMin() {
-        return curMin;
+        return (int)curMin;
     }
 }
+
 /*
 496. Next Greater Element I
 You are given two arrays (without duplicates) nums1 and nums2 where nums1’s elements are subset of nums2. Find all the next greater numbers for nums1's elements in the corresponding places of nums2.
