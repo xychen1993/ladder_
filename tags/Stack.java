@@ -1,4 +1,58 @@
 /*
+cc150: Imagine a (literal) stack of plates. If the stack gets too high, it migh t topple. Therefore, in real life, we would likely start a new stack when the previous stack exceeds some threshold. Implement a data structure SetOfStacks that mimics this. SetOfStacks should be composed of several stacks and should create a new stack once the previous one exceeds capacity. SetOfStacks.push() and SetOfStacks.pop () should behave identically to a single stack (that is, pop () should return the same values as it would if there were just a single stack).
+FOLLOW UP
+Implement a function popAt(int index) which performs a pop operation on a
+specific sub-stack.
+*/
+class SetOfStacks{
+	List<Stack> stackList;
+	int capacity;
+	
+	//Constructor
+	public SetOfStacks(int capacity) {
+		stackList = new ArrayList<>();
+		this.capacity = capacity;
+	}
+
+	public Stack getLastStack() {
+		if (stackList.isEmpty()) return null;
+		else return stackList.get(stackList.size() - 1);
+	}
+
+	public void insertNewStack() {
+		stackList.add(new Stack<Integer>());
+	}
+
+	public void removeLastStack() {
+		if (!stackList.isEmpty())
+			stackList.remove(stackList.size() - 1);
+	}
+
+	public void push(int x) {
+		if (getLastStack() == null){
+			insertNewStack();
+		}
+		Stack<Integer> s = getLastStack();
+		if (s.size() == capacity) {
+			insertNewStack();
+			s = getLastStack();
+		}
+		s.push(x);
+		System.out.println(stackList.size());
+	}
+
+	public int pop() {
+		if (getLastStack() == null) return 0;
+		Stack<Integer> s = getLastStack();
+		int top = s.pop();
+		if (s.isEmpty()) 
+			removeLastStack();
+		System.out.println(stackList.size());
+		return top;
+
+	}
+}
+/*
 CC150: STACK 3.2  How would you design a stack which, in addition to push and pop, also has a function min which returns the minimum element? Push, pop and min should all operate in 0(1) time.
 --
 Also LeetCode 155. Min Stack
