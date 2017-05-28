@@ -1,4 +1,48 @@
 /*
+In the classic problem of the Towers of Hanoi, you have 3 towers and Ndisks of different sizes which can slide onto any tower. The puzzle starts with disks sorted in ascending order of size from top to bottom (i.e., each disk sits on top of an even larger one). You have the following constraints:
+(1) Only one disk can be moved at a time.
+(2) A disk is slid off the top of one tower onto the next tower.
+(3) A disk can only be placed on top of a larger disk.
+Write a program to move the disksfrom the first tower to the last using stacks.
+*/
+class Tower {
+	private Stack<Integer> tower;
+	private int index;
+
+	public Tower(int index) {
+		tower = new Stack<>();
+		this.index = index;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void add(int i) {
+		if (!tower.isEmpty() && tower.peek() <= i) {
+			System.out.println("cannot add " + i + " into " + getIndex());
+		}else {
+			tower.push(i);
+		}
+	}
+
+	public void moveTopTo(Tower t) {
+		int top = tower.pop();
+		t.add(top);
+		System.out.println("move " + top + " from " + getIndex() + " to " + t.getIndex());
+
+	}
+
+	public void moveDisks(int n, Tower destination, Tower buffer) {
+		if (n > 0) {
+			moveDisks(n - 1, buffer, destination);
+			moveTopTo(destination);
+			buffer.moveDisks(n - 1, destination, this);
+		}
+	}
+}
+
+/*
 cc150: Imagine a (literal) stack of plates. If the stack gets too high, it migh t topple. Therefore, in real life, we would likely start a new stack when the previous stack exceeds some threshold. Implement a data structure SetOfStacks that mimics this. SetOfStacks should be composed of several stacks and should create a new stack once the previous one exceeds capacity. SetOfStacks.push() and SetOfStacks.pop () should behave identically to a single stack (that is, pop () should return the same values as it would if there were just a single stack).
 FOLLOW UP
 Implement a function popAt(int index) which performs a pop operation on a
