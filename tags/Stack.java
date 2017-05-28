@@ -1,4 +1,43 @@
 /*
+cc150: 3.6 Write a program to sort a stack in ascending order (with biggest items on top).
+You may use at most one additional stack to hold items, but you may not copy the
+elements into any other data structure (such as an array). The stack supports the
+following operations: push, pop, peek, and isEmpty
+*/
+/*
+s1:[2,3,1] ->[1,2,3]
+s2:[]
+----
+[2,3]
+[1,]
+
+[2,1]
+[3,]
+
+[2]
+[3,1]
+
+[1]
+[3,2,1]
+----
+*/
+public class Solution{
+	public Stack sortStack(Stack<Integer> s) {
+		if (s == null) return null;
+		Stack<Integer> res = new Stack<>();
+
+		while (!s.isEmpty()) {
+			int pop = s.pop();
+			while (!res.isEmpty() && pop < res.peek()) {
+				s.push(res.pop());
+			}
+			res.push(pop);
+			
+		}
+		return res;
+	}
+}
+/*
 CC150:3.5 Implement a MyQueue class which implements a queue using two stacks
 */
 class MyQueue {
