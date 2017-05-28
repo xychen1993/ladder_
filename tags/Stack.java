@@ -1,4 +1,47 @@
 /*
+CC150:3.5 Implement a MyQueue class which implements a queue using two stacks
+*/
+class MyQueue {
+	Stack<Integer> in;
+	Stack<Integer> out;
+
+	public MyQueue() {
+		in = new Stack<>();
+		out = new Stack<>();
+	}
+
+	public void offer(int n){
+		in.push(n);
+	}
+	
+	public void shiftStacks() {
+		if (out.isEmpty()) {
+			while (!in.isEmpty()) {
+				out.push(in.pop());
+			}
+		}
+	}
+
+	public int peek() {
+		shiftStacks();
+		return out.peek();
+		
+	}
+
+	//No need to worry about empty queue, because users should use isEmpty() to check before pull;
+	public int pull() {
+		shiftStacks();
+		return out.pop();
+
+	}
+
+	public boolean isEmpty() {
+		return in.isEmpty() && out.isEmpty();
+	}
+
+}
+
+/*
 In the classic problem of the Towers of Hanoi, you have 3 towers and Ndisks of different sizes which can slide onto any tower. The puzzle starts with disks sorted in ascending order of size from top to bottom (i.e., each disk sits on top of an even larger one). You have the following constraints:
 (1) Only one disk can be moved at a time.
 (2) A disk is slid off the top of one tower onto the next tower.
@@ -25,7 +68,7 @@ class Tower {
 			tower.push(i);
 		}
 	}
-
+	//Don't worry about cannot add top into t because moveTopTo() in moveDisks() makes sure that top < t.peek()
 	public void moveTopTo(Tower t) {
 		int top = tower.pop();
 		t.add(top);
