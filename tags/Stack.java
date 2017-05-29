@@ -1,4 +1,89 @@
 /*
+cc150: 3.7 An animal shelter holds only dogs and cats, and operates on a strictly "first in, first out" basis. People must adopt either the "oldest" (based on arrival time) of all animals at the shelter, or they can select whether they would prefer a dog or a cat (and will receive the oldest animal of that type). They cannot select which specific animal they would like. Create the data structures to maintain this system and implement operations such as enqueue, dequeueAny, dequeueDog and dequeueCat.You may use the built-in LinkedList data structure.
+*/
+abstract class Animal {
+	private String name;
+	private int order;
+
+	public Animal(String name) {
+		this.name = name;
+	}
+	//the smaller the order
+	public void setOrder(int order) {
+		this.order = order;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public int getOrder() {
+		return order;
+	}
+
+	public boolean isOrderThan(Animal animal) {
+		return order < animal.getOrder();
+	}
+}
+
+class Dog extends Animal{
+	public Dog(String name) {
+		super(name);
+	}
+}
+
+class Cat extends Animal {
+	public Cat (String name) {
+		super(name);
+	}
+}
+
+class AnimalShelter {
+	private LinkedList<Dog> dogs;
+	private LinkedList<Cat> cats;
+	private int allAnimalNum;
+
+	public AnimalShelter() {
+		dogs = new LinkedList<>();
+		cats = new LinkedList<>();
+		allAnimalNum = 0;
+	}
+
+	public void enqueue(Animal animal) {
+		if (animal == null) return;
+		animal.setOrder(allAnimalNum++);
+
+		if (animal instanceof Dog) {
+			dogs.add((Dog)animal);
+		}else {
+			cats.add((Cat)animal);
+		}
+	}
+
+	public Cat dequeueCat() {
+		if (!cats.isEmpty()) {
+			return cats.poll();
+		}else return null;
+	}
+
+	public Dog dequeueDog() {
+		if (!dogs.isEmpty()) {
+			return dogs.poll();
+		}else return null;
+	}
+
+	public Animal dequeueAny() {
+		if (!dogs.isEmpty() && !cats.isEmpty()) {
+			if (cats.peek().isOrderThan(dogs.peek())) return cats.poll(); 
+			else return dogs.poll(); 
+		}else if (dogs.isEmpty()) {
+			return dequeueCat();
+		}else {
+			return dequeueDog(); 
+		} 
+	}
+}
+/*
 cc150: 3.6 Write a program to sort a stack in ascending order (with biggest items on top).
 You may use at most one additional stack to hold items, but you may not copy the
 elements into any other data structure (such as an array). The stack supports the
