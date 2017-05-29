@@ -21,6 +21,7 @@ s2:[]
 [3,2,1]
 ----
 */
+//T:O(N^2),S:O(N)
 public class Solution{
 	public Stack sortStack(Stack<Integer> s) {
 		if (s == null) return null;
