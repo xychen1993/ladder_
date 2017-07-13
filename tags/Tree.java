@@ -1,4 +1,97 @@
 /*
+cc150 4.4 Given a binary tree, design an algorithm which creates a linked list of all the nodes at each depth (e.g., if you have a tree with depth D, you'll have D linked lists).*/
+/*
+*/
+
+/*
+CC150 4.3 Given a sorted (increasing order) array with unique integer elements, write an algorithm to create a binary search tree with minimal height.
+*/
+/*
+createTree(array):
+	root = array[middle]
+	root.left = createTree(array[0 : middle])
+	root.right = createTree(array[middle : 0])
+	return root
+*/
+/*O(N),O(N)*/
+class Node{
+	public int value;
+	public Node right;
+	public Node left;
+
+	public Node(int value) {
+		this.value = value;
+	}
+}
+
+public class Solution{
+	public Node createTree(int[] array) {
+		if (array == null) return null;
+		return createTreeHelper(array,0,array.lenght - 1);
+	}
+
+	public Node createTreeHelper(int[] array, int start, int end) {
+		if (start > end) return null;
+		int middle = start + (start - end) / 2;
+		Node root = new Node(array[middle]);
+		root.left = createTreeHelper(array, start, middle - 1);
+		root.right = createTreeHelper(array, middle + 1, end);
+		return root;
+	}
+}
+/*
+CC150 4.2 Given a directed graph, design an algorithm to find out whether there is a route between two nodes.
+*/
+/*
+/*
+DFS or BFS: DFS can be implement easily by recursion, but it may traverse 1 adjancent node too deeply before ever going onto other immediate neighbors. BFS can also get the shortest path.  
+so we choose BFS
+route(Graph g, Node start, Node end):
+	 BFS(g):
+	 	if find end:
+	 		reutrn true;
+	 	else 
+	 		return fasle;
+*/
+/*O(|V|+|E|), O(|V|)*/
+public class Node{
+	public boolean visted;
+	public List<Node> adjacent;
+
+	public List getAdjacent() {
+		//return all the adjancent nodes
+	}
+}
+
+public class Graph{
+	public List<Node> nodes;
+
+	public List getAllNodes() {
+		//traverse all the nodes
+	}
+}
+public class Solution {
+	public boolean searchRoute(Graph g, Node start, Node end) {
+		Queue<Node> q = new LinkedList<>();
+		for (Node node : g.getAllNodes()) {
+			node.visted = false;
+		}
+		q.offer(start);	
+		start.visted = true;
+		while (!q.isEmpty()) {
+			Node n = q.poll();
+			for (Node a : n.getAdjacent()) {
+				if (a.visted == true) continue;
+				if (a == end) return true;
+				q.offer(a);
+				a.visted = true;
+			}
+		}
+		return false;
+	}
+}
+
+/*
 CC150, 4.1 Implement a function to check if a binary tree is balanced. For the purposes of this question, a balanced tree is defined to be a tree such that the heights of the two subtrees of any node never differ by more than one.
 */
 /*
@@ -28,53 +121,6 @@ public class Solution {
 		else return Math.max(leftHeight, rightHeight) + 1;
 	}
 
-}
-/*
-CC150 4.2 Given a directed graph, design an algorithm to find out whether there is a route between two nodes.
-*/
-/*
-route(Graph g, Node start, Node end):
-	 BFS(g):
-	 	if find end:
-	 		reutrn true;
-	 	else 
-	 		return fasle;
-*/
-public class Node{
-	public boolean visted;
-	public List<Node> adjacent;
-
-	public List getAdjacent() {
-
-	}
-}
-
-public class Graph{
-	public List<Node> nodes;
-
-	public List getAllNodes() {
-
-	}
-}
-public class Solution {
-	public boolean searchRoute(Graph g, Node start, Node end) {
-		Queue<Node> q = new LinkedList<>();
-		for (Node node : g.getAllNodes()) {
-			node.visted = false;
-		}
-		q.offer(start);	
-		start.visted = true;
-		while (!q.isEmpty()) {
-			Node n = q.poll();
-			for (Node a : n.getAdjacent()) {
-				if (a.visted == true) continue;
-				if (a == end) return true;
-				q.offer(a);
-				a.visted = true;
-			}
-		}
-		return false;
-	}
 }
 
 
