@@ -1,7 +1,42 @@
 /*
 cc150 4.4 Given a binary tree, design an algorithm which creates a linked list of all the nodes at each depth (e.g., if you have a tree with depth D, you'll have D linked lists).*/
 /*
+DFS and BFS: DFS requires extra space becasue there's O(logN) recursive calls, but BFS is iterative, no extra space needed. But both of them are O(N).
+
+createLevelLists(root):
+	BFS(root):
+		n = number of nodes at this depth
+		put these n nodes in the same list
 */
+public class Solution{
+	public List<List<TreeNode>> createLevelLists(TreeNode root) {
+		List<List<TreeNode>> results = new ArrayList<LinkedList<TreeNode>>;
+		if (root == null) return results;
+		Queue<TreeNode> q = new LinkedList<>();
+		q.add(root);
+		int curLevelNodesNum = 1;
+
+		while(!q.isEmpty()) {
+			int nextLevelNodesNum = 0;
+			LinkedList<TreeNode> levelList = new LinkedList<>();
+			results.add(levelList);
+			for (int i = 0; i < curLevelNodesNum; i++) {
+				Node cur = q.poll();
+				levelList.add(cur);
+				if (cur.left != null) {
+					q.add(cur.left);
+					nextLevelNodesNum++;
+				}
+				if (cur.right != null) {
+					q.add(cur.right);
+					nextLevelNodesNum++;
+				}
+			curLevelNodesNum = nextLevelNodesNum;
+			}
+		}
+		return results;
+	}
+}
 
 /*
 CC150 4.3 Given a sorted (increasing order) array with unique integer elements, write an algorithm to create a binary search tree with minimal height.
