@@ -1,4 +1,73 @@
 /*
+4.9 You are given a binary tree in which each node contains a value. Design an algorithm to print all paths which sum to a given value. The path does not need to start or end at the root or a leaf.
+*/
+
+/*
+cc150 4.8 You have two very large binary trees: T1, with millions of nodes, and T2, with hundreds of nodes. Create an algorithm to decide if T2 is a subtree of T1.
+A tree T2 is a subtree of T1 if there exists a node n in T1 such that the subtree of n is identical to T2. That is, if you cut off the tree at node n, the two trees would be identical.
+*/
+/*
+we can use this law: inorder + pre/postorder uniquely indentify a tree
+time O(M+N),space O(M+N)
+matchTree(t1, t2):
+	if t1 and t2 are null:
+		return true;
+	if t1 == null || t2 == null:
+		return false;
+	if t1 == t2:
+		keep comparing the subtrees of t1 and t2
+	else:
+		search for the node on t1's subtree which == t2	
+*/
+/*
+N nodes on T1 and M nodes on T2
+worst case O(MN)(O(n^2)),space:O(logN + logM)
+*/
+public class Solution{
+	public boolean matchTree(TreeNode t1, TreeNode t2) {
+		if (t1 == null && t2 == null) 
+			return true;
+		if (t1.value == null || t2.value == null) 
+			return false;
+		if (t1.value == t2.value)
+			return  matchTree(t1.left, t2.left) && matchTree(t1.right, t2.right);
+		else
+			return matchTree(t1.left, t2) || matchTree(t1.right, t2);
+	}
+}
+
+/*
+cc150 4.7 Design an algorithm and write code to find the first common ancestor of two nodes in a binary tree. Avoid storing additional nodes in a data structure. NOTE: This is not necessarily a binary search tree.
+*/
+/*
+firstCommonAncestor(root, A, B):
+	if A and B are on the same subtree:
+		return firstCommonAncestor(root.thatSubtree, A, B)
+	else they are not on the same side:
+		return root
+*/
+/*O(N) cause it's not a bst, search for n times,
+O(logN) ???? not sure*/
+public class Solution{
+	public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+		if (root == null) return null;
+		if (root == p || root == q) return root;
+		TreeNode left = lowestCommonAncestor(root.left, p, q);
+		TreeNode right = lowestCommonAncestor(root.right, p, q);
+		if (left == null && right == null) {
+			return null; //first common ancestor not found
+		}
+		else if (left == null) {
+			return right;//both on the right side
+		}else if (right == null){
+			return left;//both on the left side
+		}else{
+			return root;//not on the same side
+		}
+	}
+}
+
+/*
 cc150 4.6 Write an algorithm to find the 'next'node (i.e., in-order successor) of a given node in a binary search tree. You may assume that each node has a link to its parent.
 */
 /*
@@ -8,6 +77,7 @@ while the node is on the right subtree of its parent:
 	node = node.parent
 return node
 */
+/*O(h) where h is the height of the tree. O(1)*/
 public class Solution{
 	public TreeNode getInOrderSuccessor(TreeNode node) {
 		if (node == null) return null;
