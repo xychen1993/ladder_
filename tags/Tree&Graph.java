@@ -1,4 +1,67 @@
 /*
+cc150 4.6 Write an algorithm to find the 'next'node (i.e., in-order successor) of a given node in a binary search tree. You may assume that each node has a link to its parent.
+*/
+/*
+if the node has right subtree:
+	return The leftmost node on its right subtree
+while the node is on the right subtree of its parent:
+	node = node.parent
+return node
+*/
+public class Solution{
+	public TreeNode getInOrderSuccessor(TreeNode node) {
+		if (node == null) return null;
+		if (node.right != null) {
+			return getLeftMostNode(node.right);
+		}else {
+			return getParentSuccessor(node);
+		}
+	}
+
+	public TreeNode getLeftMostNode(TreeNode node) {
+		while (node.left != null) {
+			node = node.left;
+		}
+		return node;
+	}
+
+	public TreeNode getParentSuccessor(TreeNode node) {
+		if (node == null) return null;
+		while (node.parent != null) {
+			if (node.parent.right == node){
+				node = node.parent;
+			}else {
+				return node;
+			}
+		}
+		return null;
+	}
+
+}
+
+/*
+cc150 4.5 Implement a function to check if a binary tree is a binary search tree.
+*/
+/*
+isBST(root, min, max):
+	if (root.value <= min || root.value >= max) return false;
+	return isBST(root.left, root.value, max) && isBST(root.right, min, root.value); 
+*/
+/*O(N), Due to the use of recursion space is O(logN)*/
+public class Solution{
+	public boolean isBST(TreeNode root) {
+		return isBSTHelper(root, Integer.MIN_VALUE, Integer.MAX_VALUE);
+	}
+
+	public boolean isBSTHelper(TreeNode root, int min, int max) {
+		if (root == null) 
+			return true;
+		if (root.value <= min || root.value >= max) 
+			return false;
+		return isBSTHelper(root.left, min, root.value) && isBSTHelper(root.right, root.value, max);
+	}
+}
+/*
 cc150 4.4 Given a binary tree, design an algorithm which creates a linked list of all the nodes at each depth (e.g., if you have a tree with depth D, you'll have D linked lists).*/
 /*
 DFS and BFS: DFS requires extra space becasue there's O(logN) recursive calls, but BFS is iterative, no extra space needed. But both of them are O(N).
@@ -8,6 +71,7 @@ createLevelLists(root):
 		n = number of nodes at this depth
 		put these n nodes in the same list
 */
+/*O(N), O(N)*/
 public class Solution{
 	public List<List<TreeNode>> createLevelLists(TreeNode root) {
 		List<List<TreeNode>> results = new ArrayList<LinkedList<TreeNode>>;
