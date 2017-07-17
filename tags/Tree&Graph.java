@@ -1,5 +1,19 @@
+
 /*
 4.9 You are given a binary tree in which each node contains a value. Design an algorithm to print all paths which sum to a given value. The path does not need to start or end at the root or a leaf.
+*/
+/*
+findSum(node, sum, path):
+	add current node to path
+	add the nodes along the path in reverse order from node to root:
+		if the sum = given sum:
+			print this subpath
+	search nodes beneath the current node recursively
+	remove the current node from path 
+*/
+/*
+O(NlogN), N nodes doing a logN amount of work on each step
+O(logN), this function will recurse O(logN) times and the path parameter is only allocated once (at O(log n) space) during the recursion
 */
 public class Solution{
 	public void findSum(TreeNode root, int sum, ArrayList<Integer> path) {
