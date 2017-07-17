@@ -1,6 +1,37 @@
 /*
 4.9 You are given a binary tree in which each node contains a value. Design an algorithm to print all paths which sum to a given value. The path does not need to start or end at the root or a leaf.
 */
+public class Solution{
+	public void findSum(TreeNode root, int sum, ArrayList<Integer> path) {
+		if (root == null) return;
+		
+		path.add(root.value);
+
+		/*Look for paths with sum that end at current node*/
+		int s = 0;
+		int level = path.size();
+		for (int i = level - 1; i--; i >= 0) {
+			s += path.get(i);
+			if (s == sum) {
+				printPath(path, i, level);
+			}
+		}
+
+		/*Search nodes beneath this one*/
+		findSum(root.left, sum, path);
+		findSum(root.right, sum, path);
+
+		/*Remove current node from the path*/
+		path.remove(level - 1);
+	}
+
+	public void printPath(ArrayList<Integer> path, int start, int end) {
+		for (int i = start; i < end; i++) {
+			System.out.print(path.get(i) +  " ");
+		}
+		System.out.println();
+	}
+}
 
 /*
 cc150 4.8 You have two very large binary trees: T1, with millions of nodes, and T2, with hundreds of nodes. Create an algorithm to decide if T2 is a subtree of T1.
