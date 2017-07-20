@@ -4,6 +4,9 @@
 /*
 drawHorizontalLine(byte[] screen,int width,int xl,int x2,int y)
 
+method 1: iterate from x1 to x2, set each bit along the way
+method 2: if x1 and x2 are far away from each other, full bytes contained between them. A full byte can be set one at a time by doing byte[i] = 0xFF. So we can do this using mask.
+
 */
 
 /*
