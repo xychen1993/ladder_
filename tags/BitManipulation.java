@@ -1,22 +1,77 @@
 /*
-An array A contains all the integers from 0 through n, except for one number which is missing. In this problem, we cannot access an entire integer in A with a single operation. The elements of A are represented in binary, and the only operation we can use to access them is "fetch the jth bit of A[i]," which takes constant time. Write code to find the missing integer. Can you do it in O(n) time?
+5.8 A monochrome screen is stored as a single array of bytes, allowing eight consecutive pixels to be stored in one byte. The screen has width w, where w is divisible by 8 (that is, no byte will be split across rows). The height of the screen, of course, can be derived from the length of the array and the width. Implement a function drawHorizontalLine(byte[] screen,int width,int xl,int x2,int y) which draws a horizontal line from (x1, y) to (x2, y)
+*/
+/*
+drawHorizontalLine(byte[] screen,int width,int xl,int x2,int y)
+
+*/
+
+/*
+5.7 An array A contains all the integers from 0 through n, except for one number which is missing. In this problem, we cannot access an entire integer in A with a single operation. The elements of A are represented in binary, and the only operation we can use to access them is "fetch the jth bit of A[i]," which takes constant time. Write code to find the missing integer. Can you do it in O(n) time?
 */
 /*
 n = 3
 A[0,1,3] 2 is missing
 method 1: add all integers up, and n * (n + 1) / 2 - sum = the missing integer
 
-00000000
-00000001
-00000010
-00000011
-00000100
-00000101
-00000110
-00000111
-n & n - 1 clears the least significant bit
+000000 = 1
 
+000001 = 5
+
+
+if n % 2 == 1 then num(0s) = num(1s) + 1
+if n % 2 == 0 then num(0s) = num(1s)
+num(0s) <= nums(1s)
+
+if num(0s) > nums(1s) then missing lsb = 1
+if num(0s) <= nums(1s) then missing lsb = 0 
+
+findMissingNumber(array):
+	count the last bit in each number:
+		if num(0s) > nums(1s) then missing bit = 1:
+			exclude numbers ends with 0
+		if num(0s) <= nums(1s) then missing bit = 0 :
+			exclude numbers ends with 1
+	return lefted numebr
 */
+/*O(N), N + N/2 ... 
+O(N)
+*/
+public class Solution{
+	public int findMissingNumber(List<BitInteger> array){
+		return findMissingNumber(array, 0);
+	}
+
+	public int findMissingNumber(List<BitInteger> array, int p){
+		if (p >= BitInteger.SIZE) {
+			return 0;
+		}
+		/*count 0s and 1s*/
+		List<BitInteger> endsWith0 = new ArrayList<>();
+		List<BitInteger> endsWith1 = new ArrayList<>();
+
+		for (BitInteger a : array){
+			if (a.fetch(p) == 0) {
+				endsWith0.add(a);
+			}else {
+				endsWith1.add(a);
+			}
+		}
+		
+		if (endsWith0.size() > endsWith1.size()) {
+			/*missing bit is 1*/
+			int b = findMissingNumber(endsWith1, p + 1);
+			return (b << 1) | 1;
+		}else {
+			/*missing bit is 0*/
+			int b = findMissingNumber(endsWith0, p + 1);
+			return (b << 1) & 0;
+		}
+
+
+
+	}
+}
 
 /*
 5.6 Write a program to swap odd and even bits in an integer with as few instructions as possible (e.g., bit 0 and bit 1 are swapped, bit 2 and bit 3 are swapped, and so on).
