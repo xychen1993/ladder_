@@ -1,4 +1,101 @@
 /*
+9.6 Implement an algorithm to print all valid (i.e., properly opened and closed) combinations of n-pairs of parentheses.
+*/
+/*
+base cases:
+0	""
+1	()
+2	(()),()()
+3 	((())),(()()),(())(),()(()),()()()
+
+gerPairs(n):
+	if n is 0 return "";
+	pre = gerPairs(n - 1);
+	insert new pair of parenthese into 1. middle of each existing pair of parenteses
+									   2. begining of the string
+							  
+	check duplicate using set
+
+test cases:
+0	""
+1	"" -> ()
+2	() -> (()),()()
+3	(()),()() -> ((())),(()()),(())(),()(()),()()()
+*/
+
+public class Solution{
+	public Set<String> getPairs(int n){
+		Set<String> pairs = new HashSet<>();
+		if (n < 1) {
+			pairs.add("");
+			return pairs;
+		}
+
+		Set<String> pre = getPairs(n - 1);
+		for(String pair : pre) {
+			
+			
+		}
+	}
+}
+
+
+/*
+9.5 Write a method to compute all permutations of a string
+*/
+/*
+ABC -> ABC ACB BAC BCA CBA CAB
+
+n = len of string
+base cases:
+0 -> ""
+1 -> "a1"
+2 -> "a1,a2", "a2,a1"
+3 -> "a1,a2,a3", "a2,a1,a3", "a3,a1,a2", "a3,a2,a1", "a1,a3,a2", "a2,a3,a1"
+
+getPermutations(str):
+	if str is empty return "";
+	previous = getPermutations(str - 1);
+	add cur into everyspace of each previous permutations
+
+test cases:
+null	null
+""		[""]
+"a1"	[""] -> ["a1"]
+"a1,a2"	[""] -> ["a1"] -> ["a2,a1","a1,a2"]
+*/
+/*O(N!) becasue there are N! permutations
+O(N!) becasue there are N! permutations*/
+public class Solution{
+	public List<String> getPermutations(String str) {
+		if (str == null)
+			return null;
+		return getPermutations(str, str.length());
+	}
+
+	public List<String> getPermutations(String str, int index) {
+		List<String> permutations = new ArrayList<>();
+		if (index == 0) {
+			permutations.add("");
+			return permutations;
+		}
+
+		List<String> previous = getPermutations(str, index - 1);
+		char curChar = str.charAt(index - 1);
+		for (String s : previous) {
+			for (int i = 0; i <= s.length(); i++) {
+				StringBuilder sb = new StringBuilder(s);
+				sb.insert(i,curChar);
+				permutations.add(sb.toString());
+			}
+
+		}
+		return permutations;
+		
+	}
+}
+
+/*
 9.4 Write a method to return all subsets of a set.
 */
 /*
