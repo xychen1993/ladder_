@@ -1,4 +1,109 @@
 /*
+9.8 Given an infinite number of quarters (25 cents), dimes (10 cents), nickels (5 cents) and pennies (1 cent), write code to calculate the number of ways of representing n cents.
+*/
+/*
+n 	ways
+0	0
+1	1
+2	1 = 1 + 1
+3	1 = 1 + 1 + 1
+n 	sum of n - 1, n- 5, n-10 n-25 
+	(1 cent from n - 1 cents or 
+	5 cents from n - 5 cents or 
+	10 ...
+	25 ...)
+
+recursion:
+representCents(n):
+	if n is 0:
+		return 0;
+	if n = 1:
+		return 1;
+	return representCents(n-1) + representCents(n-5) + representCents(n-10) + representCents(n - 25)
+
+DP:
+representCents(n):
+	ways[0] = 0;
+	ways[1] = 1;
+	for i from 2 to n:
+		if the index is not exceed the boundary:
+			ways[i] = ways[i-1] + ways[i-5] + ways[i-10] + ways[i-25]
+	return ways[n];
+
+test cases:
+0	1
+1	1
+2	1
+3	1
+4	1
+5	ways[4] + ways[0] = 2
+	1,1,1,1,1
+	5
+6	ways[5] + ways[1] = 2 + 1 = 3
+	1,1,1,1,1,1
+	5 + 1
+	1 + 5
+*/
+public class Solution{
+	public int representCents(int n){
+		if (n < 0) return 0;
+		if (n < 2) return 1;
+		int[] ways = new int[n + 1];
+		ways[0] = 1;
+		ways[1] = 1;
+		
+		for (int i = 2; i <= n; i++) {
+			ways[i] += ways[i - 1];
+			if (i >= 5) {
+				ways[i] += ways[i - 5];
+			}
+			if (i >= 10) {
+				ways[i] += ways[i - 10];
+			}
+			if (i >= 25) {
+				ways[i] += ways[i - 25];
+			}
+		}
+		
+		return ways[n];
+	}
+}
+
+/*
+9.7 Implement the "paint fill" function that one might see on many image editing programs. That is, given a screen (represented by a two-dimensional array of colors), a point, and a new color, fill in the surrounding area until the color changes from the original color.
+*/
+/*
+paintFill(point):
+	if color changes:
+		return;
+	change the color at this point
+	paintFill(surrounding points);
+*/
+enum Color{
+	RED, GREEN, YELLOW;
+}
+
+public class Solution{
+	public void paintFill(Color[][] screen, int x, int y, Color newColor) {
+		paintFill(screen, x, y, newColor, screen[x][y]);
+	}
+	public void paintFill(Color[][] screen, int x, int y, Color newColor, Color oldColor) {
+		if (x < 0 || y < 0 || screen == null || x >= screen[0].length || y >= screen.length) {
+			return;
+		} 
+		if (screen[x][y] != oldColor) {
+			return;
+		}
+		screen[x][y] = newColor;
+		paintFill(screen, x - 1, y, newColor, oldColor);
+		paintFill(screen, x, y - 1, newColor, oldColor);
+		paintFill(screen, x + 1, y, newColor, oldColor);
+		paintFill(screen, x, y + 1, newColor, oldColor);
+	}
+}
+
+
+/*
 9.6 Implement an algorithm to print all valid (i.e., properly opened and closed) combinations of n-pairs of parentheses.
 */
 /*
@@ -16,14 +121,29 @@ gerPairs(n):
 							  
 	check duplicate using set
 
+optimize:
+build the str from scratch, add left/right parens as long as str is valid
+gerPairs(n):
+	keep track of number of left/right parens, they both start with n
+	if we run out of all parens:
+		add current str to list
+	if we still have left parens:
+		append left parens into current str recursively;
+	if number of left used > number of right used:
+		append right parens into current str recursively;
+
+
 test cases:
 0	""
 1	"" -> ()
 2	() -> (()),()()
 3	(()),()() -> ((())),(()()),(())(),()(()),()()()
+
+(()), ()(), (())()
 */
 
 public class Solution{
+	//Duplicate issue
 	public Set<String> getPairs(int n){
 		Set<String> pairs = new HashSet<>();
 		if (n < 1) {
@@ -32,9 +152,54 @@ public class Solution{
 		}
 
 		Set<String> pre = getPairs(n - 1);
-		for(String pair : pre) {
-			
-			
+		for(String str : pre) {
+			for (int i = 0; i < str.length(); i++) {
+				if (str.charAt(i) == '(') {
+					String newPair = insert(str, i);
+					pairs.add(newPair);
+				}
+			}
+			str = "()" + str;
+			pairs.add(str);
+		}
+		return pairs;
+	}
+
+	public String insert(String str, int i) {
+		String left = str.substring(0, i + 1);
+		String right = str.substring(i + 1, str.length());
+		return left + "()" + right;
+	}
+
+	//Build strs from scratch
+	public List<String> getPairsFromScratch(int n) {
+		List<String> pairs = new ArrayList<>();
+		getPairs(pairs, n, n, new StringBuilder());
+		return pairs;
+	}
+
+	public void getPairs(List<String> list, int left, int right, StringBuilder sb) {
+		/*Not valid*/
+		if (left < 0 || left > right) {
+			return;
+		}
+
+		/*Run out of all the parens*/
+		if (left == 0 && right == 0) {
+			list.add(sb.toString());
+			return;
+		}
+
+		if (left > 0) {
+			sb.append("(");
+			getPairs(list, left - 1, right, sb);
+			sb.deleteCharAt(sb.length() - 1);
+		}
+
+		if (left < right) {
+			sb.append(")");
+			getPairs(list, left, right - 1, sb);
+			sb.deleteCharAt(sb.length() - 1);
 		}
 	}
 }
