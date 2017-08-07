@@ -94,6 +94,7 @@ null   		null
 []     		[[]]
 [1,2,3]		[[], [1], [1, 2], [1, 2, 3], [1, 3], [2], [2, 3], [3]]
 */
+//O(2^N), O(N)
 class Solution {
 
     public ArrayList<ArrayList<Integer>> subsets(int[] nums) {
@@ -141,6 +142,7 @@ The solution set must not contain duplicate subsets.
 * [1,1]        [[], [1,1]]
 * [1,2,2]      [[], [1], [1,2], [1,2,2],[2], [2,2]]
 */
+//O(2^N),O(N)
 class Solution {
 
     public ArrayList<ArrayList<Integer>> subsetsWithDup(int[] nums) {
@@ -167,7 +169,121 @@ class Solution {
     }
 }
 
+/*
+O3. strStr II 
+Implement strStr function in O(n + m) time.
+strStr return the first index of the target string in a source string. The length of the target string is m and the length of the source string is n.
+If target does not exist in source, just return -1.
+*/
+//Hard, need to implement KMP
 
+/*
+Re1. Permutations
+Given a list of numbers, return all possible permutations.
+
+Notice
+You can assume that there is no duplicate numbers in the list.
+
+Example
+For nums = [1,2,3], the permutations are:
+[
+  [1,2,3],
+  [1,3,2],
+  [2,1,3],
+  [2,3,1],
+  [3,1,2],
+  [3,2,1]
+]
+*/
+/**
+* @param nums: A list of integers.
+* @return: A list of permutations.
+* 
+* examples
+* input        permutations
+* null         null
+* []           [[]]
+* [1]          [[1]]
+* [1,2]        [[1,2],[2,1]]: we insert 2 into the previous premutations
+* [1,2,3]      [[3,1,2],[1,3,2],[1,2,3],[3,2,1],[2,3,1],[2,1,3]]
+* 
+*1. recursive way
+* permute(nums): 
+*  pre = get all the previous premuations
+*  result = insert current element into each permuation at any possible position
+*  return result
+* 
+*2. Can use list to stimulate stack to do it in non-recursive way
+*
+* test cases:
+* input        permutations
+* null         null
+* []           [[]]
+* [1]          [[1]]
+* [1,2]        [[2,1], [1,2]]
+*/
+//O
+public class Solution {
+	//recursion
+	public List<ArrayList<Integer>> permute(int[] nums) {
+        if (nums == null) {
+            return null;
+        }
+        return permute(nums, nums.length - 1);
+    }
+    private List<ArrayList<Integer>> permute(int[] nums, int index) {
+        List<ArrayList<Integer>> results = new ArrayList<ArrayList<Integer>>();
+        if (index == -1) {
+            results.add(new ArrayList<Integer>());
+            return results;
+        }
+        List<ArrayList<Integer>> previous = permute(nums, index - 1);
+        for (List<Integer> prePermute : previous) {
+            for (int i = 0; i <= prePermute.size(); i++) {
+                prePermute.add(i, nums[index]);
+                results.add(new ArrayList<Integer>(prePermute));
+                prePermute.remove(i);
+            }
+        }
+        return results;
+    }
+
+    //non-recursive: using list to stimulate stack 
+    public List<ArrayList<Integer>> permute(int[] nums) {
+        if (nums == null) {
+            return null;
+        }
+        List<ArrayList<Integer>> permutations = new ArrayList<ArrayList<Integer>>();
+        permutations.add(new ArrayList<Integer>());
+        for (int i = 0; i < nums.length; i++) {
+        		int size = permutations.size();
+            for (int j = 0; j < size; j++) {
+                List<Integer> permutation = permutations.get(0);
+                permutations.remove(0);//用list模拟stack每次get(0)而且记得remove！
+                for (int k = 0; k <= permutation.size(); k++) {
+                    permutation.add(k, nums[i]);
+                    permutations.add(new ArrayList<Integer>(permutation));
+                    permutation.remove(k);
+                }
+            }
+        }
+        return permutations;
+    }
+
+}
+
+/*
+RE2: Permutations II
+Given a list of numbers with duplicate number in it. Find all unique permutations.
+
+Example
+For numbers [1,2,2] the unique permutations are:
+[
+  [1,2,2],
+  [2,1,2],
+  [2,2,1]
+]
+*/
 
 
 
