@@ -224,20 +224,20 @@ For nums = [1,2,3], the permutations are:
 */
 //O
 public class Solution {
-	//recursion
-	public List<ArrayList<Integer>> permute(int[] nums) {
+	//recursion 从N-1推导出N的思路。还有直接排列组合traverse的思路，就是直接排列组合
+    public List<List<Integer>> permute(int[] nums) {
         if (nums == null) {
             return null;
         }
         return permute(nums, nums.length - 1);
     }
-    private List<ArrayList<Integer>> permute(int[] nums, int index) {
-        List<ArrayList<Integer>> results = new ArrayList<ArrayList<Integer>>();
+    private List<List<Integer>> permute(int[] nums, int index) {
+        ArrayList<List<Integer>> results = new ArrayList<List<Integer>>();
         if (index == -1) {
             results.add(new ArrayList<Integer>());
             return results;
         }
-        List<ArrayList<Integer>> previous = permute(nums, index - 1);
+        List<List<Integer>> previous = permute(nums, index - 1);
         for (List<Integer> prePermute : previous) {
             for (int i = 0; i <= prePermute.size(); i++) {
                 prePermute.add(i, nums[index]);
@@ -249,17 +249,17 @@ public class Solution {
     }
 
     //non-recursive: using list to stimulate stack 
-    public List<ArrayList<Integer>> permute(int[] nums) {
+    public List<List<Integer>> permute(int[] nums) {
         if (nums == null) {
             return null;
         }
-        List<ArrayList<Integer>> permutations = new ArrayList<ArrayList<Integer>>();
+        ArrayList<List<Integer>> permutations = new ArrayList<List<Integer>>();
         permutations.add(new ArrayList<Integer>());
         for (int i = 0; i < nums.length; i++) {
-        		int size = permutations.size();
+            int size = permutations.size();
             for (int j = 0; j < size; j++) {
                 List<Integer> permutation = permutations.get(0);
-                permutations.remove(0);//用list模拟stack每次get(0)而且记得remove！
+                permutations.remove(0);
                 for (int k = 0; k <= permutation.size(); k++) {
                     permutation.add(k, nums[i]);
                     permutations.add(new ArrayList<Integer>(permutation));
@@ -269,6 +269,7 @@ public class Solution {
         }
         return permutations;
     }
+    
 
 }
 
@@ -284,6 +285,55 @@ For numbers [1,2,2] the unique permutations are:
   [2,2,1]
 ]
 */
+/**
+* @param nums: A list of integers.
+* @return: A list of unique permutations.
+* examples
+* input        output
+* null         null
+* []           [[]]
+* [1]          [[1]]
+* [1,2]        [[2,1] [1,2]]
+* [1,2,2]      [[2,2,1] [2,1,2], [2,1,2]]
+* 
+* permute(nums):
+*  do the combinations, make sure the previous elem that is the same as cur is used before we use cur to avoid duplicates.
+* 
+*/
+class Solution {
+
+    public List<List<Integer>> permuteUnique(int[] nums) {
+            ArrayList<List<Integer>> rst = new ArrayList<List<Integer>>();
+        if (nums == null) {
+            return rst;
+        }
+        Arrays.sort(nums);
+        boolean[] used = new boolean[nums.length];
+        permuteUnique(rst, new ArrayList<Integer>(), used, nums);
+        return rst;
+    } 
+    public void permuteUnique(ArrayList<List<Integer>> rst,  ArrayList<Integer> permutation, boolean[] used, int[] nums) {
+        if (permutation.size() == nums.length) {
+            rst.add(new ArrayList<Integer>(permutation));
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (used[i] == true || (i > 0 && nums[i] == nums[i - 1] && used[i - 1] == false)) {
+                continue;//[1,2,2]第一个2用了才可用第二个2，也就是利用used使他们看起来不是同一个elem，确保无重复
+            }
+            used[i] = true;
+            permutation.add(nums[i]);
+            permuteUnique(rst, permutation, used, nums);
+            used[i] = false;
+            permutation.remove(permutation.size() - 1);
+        }
+        
+    }
+    
+    
+}
+
+
+
 
 
 
