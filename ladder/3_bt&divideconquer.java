@@ -544,9 +544,32 @@ The left subtree of a node contains only nodes with keys less than the node's ke
 The right subtree of a node contains only nodes with keys greater than the node's key.
 Both the left and right subtrees must also be binary search trees.
 A single node tree is a BST
-
-
 */
+/**
+ * We can keep track of the value range of a node
+ * if the node's value exceed this value range, we return false; 
+*/
+//O(N)
+public class Solution {
+
+    /*Divide and conquer*/
+    public boolean isValidBST(TreeNode root) {
+        return isValidBST(root, Long.MIN_VALUE, Long.MAX_VALUE);
+    }
+    /*这里要用long否则会exceed limits*/
+    private boolean isValidBST(TreeNode root, long min, long max) {
+        if (root == null) {
+            return true;
+        }
+        if (root.val <= min || root.val >= max) {
+            return false;
+        }
+        boolean leftIsBST = isValidBST(root.left, min, root.val);
+        boolean rightIsBST = isValidBST(root.right, root.val, max);
+        return leftIsBST && rightIsBST;
+    }
+}
+
 
 
 
