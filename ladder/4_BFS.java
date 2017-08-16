@@ -214,8 +214,91 @@ public class Solution {
 /*
 R5. Zombie in Matrix 
 Given a 2D grid, each cell is either a wall 2, a zombie 1 or people 0 (the number zero, one, two).Zombies can turn the nearest people(up/down/left/right) into zombies every day, but can not through wall. How long will it take to turn all people into zombies? Return -1 if can not turn all people into zombies.
-
 */
+//O(ROW * COL)
+class Cell {
+    int x;
+    int y;
+    public Cell(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+public class Solution {
+    public int PEOPLE = 0;
+    public int ZOMBIE = 1;
+    public int WALL = 2;
+    public int peopleNum = 0;
+    public int zombie(int[][] grid) {
+        if (grid == null) {
+            return -1;
+        }
+        //Know the num of people, also put zombies into queue
+        Queue<Cell> queue = new LinkedList<>();
+        initial(grid, queue);
+        if (peopleNum == 0) {
+            return 0; //No people in the maxtrix
+        }
+        //iter cell in grid, turn people into new zombies, get num of days used
+        int days = turnPeopleIntoZombie(grid, queue);
+        //check if there's no people left in the matrix
+        if (peopleNum == 0) {
+            return days;
+        }
+        return -1;
+    }
+    /*Know the num of people, also put zombies into queue*/
+    private void initial(int[][] grid, Queue<Cell> queue) {
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j] == PEOPLE) {
+                    peopleNum++;
+                } else if (grid[i][j] == ZOMBIE) {
+                    queue.offer(new Cell(i, j));
+                }
+            }
+        }
+    }
+    /*turn people into zombies and return num of days used*/
+    private int turnPeopleIntoZombie(int[][] grid, Queue<Cell> queue) {
+        int days = 0;
+        int[] directionX = new int[]{0, 1, 0, -1};
+        int[] directionY = new int[]{1, 0, -1, 0};
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            days++;
+            for (int i = 0; i < size; i++) {
+                Cell curr = queue.poll();
+                for (int j = 0; j < 4; j++) {
+                    int x = curr.x + directionX[j];
+                    int y = curr.y + directionY[j];
+                    Cell cell = new Cell(x, y);
+                    if (isPeople(cell, grid)) {
+                        grid[x][y] = ZOMBIE;
+                        peopleNum--;
+                        queue.offer(cell);
+                    }
+                }
+            }
+            if (peopleNum == 0) {
+                break;
+            }
+        }
+        return days;
+    }
+    private boolean isPeople(Cell cell, int[][] grid) {
+        int x = cell.x;
+        int y = cell.y;
+        if (grid.length == 0) {
+            return false;
+        }
+        boolean inBound = x >= 0 && x < grid.length && y >= 0 && y < grid[0].length;
+        if (inBound) {
+            return grid[x][y] == PEOPLE;
+        }
+        return false;
+    }
+}
 
 
 
