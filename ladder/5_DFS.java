@@ -312,7 +312,193 @@ class Solution {
             permutation.remove(permutation.size() - 1);
         }
         
-    }
-    
-    
+    } 
 }
+/*
+R6. Subsets II 
+Given a list of numbers that may has duplicate numbers, return all possible subsets
+
+Notice
+Each element in a subset must be in non-descending order.
+The ordering between two subsets is free.
+The solution set must not contain duplicate subsets.
+
+Example
+If S = [1,2,2], a solution is:
+
+[
+  [2],
+  [1],
+  [1,2,2],
+  [2,2],
+  [1,2],
+  []
+]
+*/
+//同级别的重复数字只能用一次，遇见重复跳过，i+1来使得在下一级别可以继续用。
+class Solution {
+    /**
+     * @param nums: A set of numbers.
+     * @return: A list of lists. All valid subsets.
+     * examples
+     * intput           subsets
+     * null             null
+     * []               [[]]
+     * [1, 1]           [[], [1], [1, 1]]
+     * 
+     * test cases
+     * intput       subsets
+     * [1,1]        [[], [1,1]]
+     * [1,2,2]      [[], [1], [1,2], [1,2,2],[2], [2,2]]
+     */
+    public ArrayList<ArrayList<Integer>> subsetsWithDup(int[] nums) {
+        // write your code here
+        if (nums == null) {
+            return null;
+        }
+        Arrays.sort(nums);
+        ArrayList<ArrayList<Integer>> result = new ArrayList<ArrayList<Integer>>();
+        subsetsWithDup(result, new ArrayList<Integer>(), nums, 0);
+        return result;
+    }
+    private void subsetsWithDup(ArrayList<ArrayList<Integer>> result, ArrayList<Integer> subset, int[] nums, int index) {
+        result.add(new ArrayList<Integer>(subset));
+        for (int i = index; i < nums.length; i++) {
+            /*make sure i should > index so we can add the new element anyway*/
+            if (i > index && nums[i - 1] == nums[i]) {
+                continue;
+            }
+            subset.add(nums[i]);
+            subsetsWithDup(result, subset, nums, i + 1);
+            subset.remove(subset.size() - 1);
+        }
+    }
+}
+/*
+R7. Word Ladder II 
+Given two words (start and end), and a dictionary, find all shortest transformation sequence(s) from start to end, such that:
+
+Only one letter can be changed at a time
+Each intermediate word must exist in the dictionary
+
+Notice
+All words have the same length.
+All words contain only lowercase alphabetic characters.
+
+Example
+Given:
+start = "hit"
+end = "cog"
+dict = ["hot","dot","dog","lot","log"]
+Return
+  [
+    ["hit","hot","dot","dog","cog"],
+    ["hit","hot","lot","log","cog"]
+  ]
+*/
+/*
+for word lenght k, and the depth of trasation is d
+time: O(d*(k*26) * )？？？
+*/
+public class Solution {
+    /**
+      * @param start, a string
+      * @param end, a string
+      * @param dict, a set of string
+      * @return a list of lists of string
+      * 1. 注意每次add完继续dfs之后就要remove！
+      * 2. map<word, list<next>> 因为dfs会继续访问所有map.get(next)，所以事先要存好所有dcit里word为key的map！
+      * 3. 已经存过距离的(由于是bfs所以先存的距离肯定是最近的)跳过，并且获取parent的distance+1即可。
+      * 4. 不可以map<word, list<next>>前面访问过的就不往next里存，因为一个child可以对应多个父亲！
+      */
+    public List<List<String>> findLadders(String start, String end, Set<String> dict) {
+        List<List<String>> result = new ArrayList<>();
+        if (start == null || end == null || dict == null) {
+            return result;
+        }
+        
+        Map<String, Integer> distanceMap = new HashMap<>();
+        Map<String, ArrayList<String>> nextWordsMap = new HashMap<>();
+        List<String> sequence = new ArrayList<>();
+        
+        //get shortest length, bfs
+        //map<word, list of possible next words>
+        //map2<word, distance from word to end>
+        initial(start, end, dict, distanceMap, nextWordsMap);
+        //search for all sequences with that length
+        searchShortestSeq(start, end, distanceMap, nextWordsMap, result, sequence);
+        return result;
+    }
+    private void initial(String start, String end, Set<String> dict, Map<String, Integer> distanceMap, Map<String, ArrayList<String>> nextWordsMap) {
+        Queue<String> q = new LinkedList<>();
+        q.offer(start);
+        distanceMap.put(start, 0);
+        dict.add(start);//有start/end不在dict里的情况...
+        dict.add(end);
+        for (String s: dict) {
+            nextWordsMap.put(s, new ArrayList<String>());
+        }
+        while (!q.isEmpty()) {
+            String curt = q.poll();
+            if (curt.equals(end)) {
+                break;
+            }
+            List<String> nextWords = getNextWords(curt, dict);
+            for (String next : nextWords) {
+                 nextWordsMap.get(curt).add(next);
+                //已经存过距离的(由于是bfs所以先存的距离肯定是最近的)跳过
+                if (!distanceMap.containsKey(next)) {
+                    distanceMap.put(next, distanceMap.get(curt) + 1);
+                    q.offer(next);
+                }
+                if (next.equals(end)) {
+                    break;
+                }
+            }
+        }
+    }
+    private void searchShortestSeq(String start, String end, Map<String, Integer> distanceMap, Map<String, ArrayList<String>> nextWordsMap, List<List<String>> result, List<String> sequence) {
+        sequence.add(start);
+        if (start.equals(end)) {
+            result.add(new ArrayList<String>(sequence));
+            return;
+        }
+        List<String> nextWords = nextWordsMap.get(start);
+        for (String next : nextWords) {
+            if (distanceMap.containsKey(next) && distanceMap.get(start) + 1 == distanceMap.get(next)) {
+                searchShortestSeq(next, end, distanceMap, nextWordsMap, result,sequence);
+                sequence.remove(sequence.size() - 1);
+            }
+        }
+    }
+    private ArrayList<String> getNextWords(String curt, Set<String> dict) {
+        ArrayList<String> nextWords = new ArrayList<>();
+        int len = curt.length();
+        for (int i = 0; i < len; i++) {
+            for (char ch = 'a'; ch <= 'z'; ch++) {
+                if (curt.charAt(i) == ch) {
+                    continue;
+                }
+                String next = curt.substring(0, i) + ch + curt.substring(i + 1, len);
+                if (dict.contains(next)) {
+                    nextWords.add(next);
+                }
+            }
+        }
+        return nextWords;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
