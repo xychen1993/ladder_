@@ -272,7 +272,61 @@ public class Solution {
         return false;
     }
 }
+/*
+R8. Sort List 
+Sort a linked list in O(n log n) time using constant space complexity.
+*/
+/*
+merge sort, 每次分裂成两半，然后merge，靠merge来排序（两个node merge就会排序，然后一层层变有序）
+注意如果是偶数个node，一定要取前面那个middle，否则2个node无限循环
+*/
+public class Solution {
+    public ListNode sortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        //split in half with O(N) time, using merge sort
+        ListNode middle = getMiddle(head);
+        
+        ListNode right = sortList(middle.next);
+        middle.next = null;//split
+        //注意如果是偶数个node，一定要取前面那个middle，否则2个node无限循环
+        ListNode left = sortList(head);
+        
+        return merge(left, right);
+    }
+    private ListNode merge(ListNode left, ListNode right) {
+        ListNode dummy = new ListNode(0);
+        ListNode curt = dummy;
+        while (left != null && right != null) {
+            if (left.val < right.val) {
+                curt.next = left;
+                left = left.next;
+            } else {
+                curt.next = right;
+                right = right.next;
+            }
+            curt = curt.next;
+        }
+        if (left == null) {
+            curt.next = right;
+        }
+        if (right == null) {
+            curt.next = left;
+        }
+        return dummy.next;
+    }
+    private ListNode getMiddle(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
 
+}
 
 
 
